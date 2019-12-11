@@ -12,13 +12,24 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     private String methodName;
     private TextView log;
+    private String saved;
     //Переопределите методы жизненного цикла onCreate, onStart, onResume, onPause, onStop, onDestroy, onRestart, onPostCreate, onPostResume
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null){
+            saved = savedInstanceState.getString("key");
+        }
+
         setContentView(R.layout.activity_main);
         log = findViewById(R.id.log);
+
+        if (saved != null) {
+            log.setText(saved);
+            saved = null;
+        }
+
         methodName = "onCreate()";
         log.append("\n" + methodName);
         Log.d("Lifecycle", methodName);
@@ -114,18 +125,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
         methodName = "onSaveInstanceState()";
         log.append("\n" + methodName);
-        String saved = log.getText().toString();
+        saved = log.getText().toString();
         outState.putString("key", saved);
         Log.d("Lifecycle", methodName);
+        super.onSaveInstanceState(outState, outPersistentState);
+
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        String saved = savedInstanceState.getString("key");
+        saved = savedInstanceState.getString("key");
         log.setText(saved);
         methodName = "onRestoreInstanceState()";
         log.append("\n" + methodName);
